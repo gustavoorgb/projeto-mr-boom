@@ -20,11 +20,13 @@ use Symfony\Contracts\HttpClient\ResponseInterface;
 class ImportFipeCommand extends Command {
     private $entityManager;
     private $httpClient;
+    private $fipeApiToken;
 
-    public function __construct(EntityManagerInterface $entityManager, HttpClientInterface $httpClient) {
+    public function __construct(EntityManagerInterface $entityManager, HttpClientInterface $httpClient, string $fipeApiToken) {
         parent::__construct();
         $this->entityManager = $entityManager;
         $this->httpClient = $httpClient;
+        $this->fipeApiToken = $fipeApiToken;
     }
 
     /**
@@ -35,7 +37,11 @@ class ImportFipeCommand extends Command {
         $attempt = 0;
         while ($attempt < $retries) {
             try {
-                return $this->httpClient->request('GET', $url);
+                return $this->httpClient->request('GET', $url, [
+                    'headers' => [
+                        'Authorization' => 'Bearer ' . $this->fipeApiToken,
+                    ],
+                ]);
             } catch (HttpExceptionInterface $e) {
                 if ($e->getResponse()->getStatusCode() === 429) {
                     $attempt++;
@@ -55,14 +61,15 @@ class ImportFipeCommand extends Command {
         throw new \Exception("Falha na requisição para a URL: $url após $retries tentativas.");
     }
 
-    public function __invoke(InputInterface $input, OutputInterface $output): int {
+    protected function execute(InputInterface $input, OutputInterface $output): int {
+        ini_set('memory_limit', '1024M');
         $io = new SymfonyStyle($input, $output);
+        $this->entityManager->getConnection()->getConfiguration()->setSQLLogger(null);
         $io->title('Iniciando a importação de dados da FIPE...');
 
         try {
             // Passo 1: Obter todas as marcas
             $io->text('Obtendo marcas da FIPE...');
-            // Correção: Remove a formatação de link do Markdown da URL
             $response = $this->getWithRetry('https://fipe.parallelum.com.br/api/v2/cars/brands');
             $marcas = $response->toArray();
             $totalMarcas = count($marcas);
@@ -70,8 +77,6 @@ class ImportFipeCommand extends Command {
 
             // Passo 2: Processar cada marca
             foreach ($marcas as $dadosMarca) {
-                sleep(2);
-                // Busca a marca no banco de dados. Se não existir, cria uma nova.
                 $carMake = $this->entityManager->getRepository(CarMake::class)->findOneBy(['name' => $dadosMarca['name']]);
 
                 if (!$carMake) {
@@ -81,15 +86,11 @@ class ImportFipeCommand extends Command {
                 }
 
                 // Passo 3: Obter modelos para a marca atual
-                // Correção: Remove a formatação de link do Markdown da URL
                 $responseModelos = $this->getWithRetry("https://fipe.parallelum.com.br/api/v2/cars/brands/{$dadosMarca['code']}/models");
                 $modelosResponse = $responseModelos->toArray();
 
-                $this->entityManager->flush();
                 // Passo 4: Processar cada modelo
                 foreach ($modelosResponse as $dadosModelo) {
-                    sleep(2);
-                    // Busca o modelo no banco de dados. Se não existir, cria um novo.
                     $carModel = $this->entityManager->getRepository(CarModel::class)->findOneBy(['name' => $dadosModelo['name'], 'car_make' => $carMake]);
 
                     if (!$carModel) {
@@ -100,14 +101,11 @@ class ImportFipeCommand extends Command {
                     }
 
                     // Passo 5: Obter anos para o modelo atual
-                    // Correção: Remove a formatação de link do Markdown da URL
                     $responseAnos = $this->getWithRetry("https://fipe.parallelum.com.br/api/v2/cars/brands/{$dadosMarca['code']}/models/{$dadosModelo['code']}/years");
                     $anos = $responseAnos->toArray();
 
                     // Passo 6: Processar cada ano
                     foreach ($anos as $dadosAno) {
-                        // Busca o ano no banco de dados. Se não existir, cria um novo.
-                        // Correção: A chave do ano é 'nome', não 'name'
                         $carYear = $this->entityManager->getRepository(CarYear::class)->findOneBy(['year' => (int)$dadosAno['name'], 'car_model' => $carModel]);
 
                         if (!$carYear) {
@@ -118,9 +116,8 @@ class ImportFipeCommand extends Command {
                         }
                     }
                 }
-                // Otimização de Performance: Chama flush() apenas uma vez por marca,
-                // agrupando todas as inserções e atualizações.
                 $this->entityManager->flush();
+                $this->entityManager->clear();
                 $io->progressAdvance();
             }
 
@@ -131,7 +128,7 @@ class ImportFipeCommand extends Command {
             $io->error('Ocorreu um erro durante a importação: ' . $e->getMessage());
             return Command::FAILURE;
         } finally {
-            sleep(2);
+            // Mantendo uma pequena pausa no final por segurança
         }
     }
 }
