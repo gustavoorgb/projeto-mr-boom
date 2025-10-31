@@ -60,6 +60,9 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface {
     #[ORM\OneToMany(targetEntity: UserStore::class, mappedBy: 'user')]
     private Collection $userStores;
 
+    #[ORM\OneToOne(mappedBy: 'user', cascade: ['persist', 'remove'])]
+    private ?Client $client = null;
+
     public function __construct() {
         $this->userStores = new ArrayCollection();
     }

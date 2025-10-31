@@ -18,20 +18,15 @@ class Client
     #[ORM\ManyToOne(inversedBy: 'clients')]
     private ?Store $store = null;
 
-    #[ORM\Column(length: 100)]
-    private ?string $name = null;
-
-    #[ORM\Column(length: 180)]
-    private ?string $email = null;
-
-    #[ORM\Column(length: 25)]
-    private ?string $phone = null;
-
     /**
      * @var Collection<int, Appointment>
      */
     #[ORM\OneToMany(targetEntity: Appointment::class, mappedBy: 'client')]
     private Collection $appointments;
+
+    #[ORM\OneToOne(inversedBy: 'client', cascade: ['persist', 'remove'])]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?User $user = null;
 
     public function __construct()
     {
@@ -51,42 +46,6 @@ class Client
     public function setStore(?Store $store): static
     {
         $this->store = $store;
-
-        return $this;
-    }
-
-    public function getName(): ?string
-    {
-        return $this->name;
-    }
-
-    public function setName(string $name): static
-    {
-        $this->name = $name;
-
-        return $this;
-    }
-
-    public function getEmail(): ?string
-    {
-        return $this->email;
-    }
-
-    public function setEmail(string $email): static
-    {
-        $this->email = $email;
-
-        return $this;
-    }
-
-    public function getPhone(): ?string
-    {
-        return $this->phone;
-    }
-
-    public function setPhone(string $phone): static
-    {
-        $this->phone = $phone;
 
         return $this;
     }
@@ -117,6 +76,18 @@ class Client
                 $appointment->setClient(null);
             }
         }
+
+        return $this;
+    }
+
+    public function getUser(): ?User
+    {
+        return $this->user;
+    }
+
+    public function setUser(User $user): static
+    {
+        $this->user = $user;
 
         return $this;
     }
