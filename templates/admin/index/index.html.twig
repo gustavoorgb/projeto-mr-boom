@@ -1,0 +1,14 @@
+{% extends 'layouts/base.html.twig' %}
+
+{% block title %}Dashboard
+{% endblock %}
+
+{% block breadcrumbs %}
+	{% include 'components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'Dashboard' },
+        ]
+    } %}
+{% endblock %}
+
+{% block body %}{% endblock %}

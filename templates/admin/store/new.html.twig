@@ -1,0 +1,35 @@
+{% extends 'layouts/base.html.twig' %}
+
+{% block title %}Cadastro de Loja
+{% endblock %}
+
+{% block breadcrumbs %}
+	{% include 'components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'Dashboard', path: path('app_admin') },
+            { label: 'Lojas', path: path('app_store_index') },
+            { label: 'Cadastro'},
+        ]
+    } %}
+{% endblock %}
+
+{% block body %}
+	<div class="container-fluid">
+		<div class="d-sm-flex align-items-center justify-content-between mb-4">
+			<h1 class="h3 mb-0 text-gray-800">Cadastro de Loja</h1>
+			<a href="{{ path('app_store_index') }}" class="d-none d-sm-inline-block btn btn-sm btn-primary shadow-sm">
+				<i class="fas fa-list fa-sm text-white-50"></i>
+				Listar Lojas
+			</a>
+		</div>
+
+		<div class="card shadow mb-4">
+			<div class="card-header py-3">
+				<h6 class="m-0 font-weight-bold text-primary">Preencha os dados da nova loja</h6>
+			</div>
+			<div class="card-body">
+				{{ include('admin/store/_form.html.twig', {'button_label': 'Salvar'}) }}
+			</div>
+		</div>
+	</div>
+{% endblock %}

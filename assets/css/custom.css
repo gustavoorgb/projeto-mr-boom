@@ -1,0 +1,30 @@
+.form-check-input {
+    display: none;
+}
+
+.form-check-label {
+    position: relative;
+    padding-left: 1.5rem;
+    cursor: pointer;
+}
+
+.form-check-label::before {
+    content: "";
+    position: absolute;
+    left: 0;
+    top: 0.1rem;
+    width: 1em;
+    height: 1em;
+    border: 1px solid rgba(0, 0, 0, 0.25);
+    border-radius: 0.25em;
+    background: #fff;
+}
+
+.form-check-input:checked + .form-check-label::before {
+    background-color: #007bff;
+    border-color: #007bff;;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 20 20'%3e%3cpath fill='none' stroke='%23fff' stroke-linecap='round' stroke-linejoin='round' stroke-width='3' d='M6 10l3 3l6-6'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: center;
+    background-size: contain;
+}

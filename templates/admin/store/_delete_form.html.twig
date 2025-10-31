@@ -1,0 +1,31 @@
+<button type="button" class="btn btn-danger btn-sm" data-toggle="modal" data-target="#deleteModal{{ store.id }}">
+	<i class="fas fa-trash-alt"></i>
+	Excluir
+</button>
+
+<div class="modal fade" id="deleteModal{{ store.id }}" tabindex="-1" role="dialog" aria-labelledby="deleteModalLabel{{ store.id }}" aria-hidden="true">
+	<div class="modal-dialog" role="document">
+		<div class="modal-content">
+			<div class="modal-header">
+				<h5 class="modal-title" id="deleteModalLabel{{ store.id }}">Confirmação de Exclusão</h5>
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+					<span aria-hidden="true">&times;</span>
+				</button>
+			</div>
+			<div class="modal-body">
+				Você tem certeza que deseja excluir esta loja? Esta ação não pode ser desfeita.
+			</div>
+			<div class="modal-footer">
+				<button type="button" class="btn btn-secondary" data-dismiss="modal">Cancelar</button>
+
+				<form method="post" action="{{ path('app_store_delete', {'id': store.id}) }}">
+					<input type="hidden" name="_token" value="{{ csrf_token('delete' ~ store.id) }}">
+					<button type="submit" class="btn btn-danger">
+						<i class="fas fa-trash-alt"></i>
+						Excluir
+					</button>
+				</form>
+			</div>
+		</div>
+	</div>
+</div>

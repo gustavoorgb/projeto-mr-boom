@@ -1,0 +1,37 @@
+{% extends 'layouts/base.html.twig' %}
+
+{% block title %}Editar Usuário
+{% endblock %}
+
+{% block breadcrumbs %}
+	{% include 'components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'Dashboard', path: path('app_admin') },
+            { label: 'Usuários', path: path('app_user_index') },
+            { label: 'Editar'},
+        ]
+    } %}
+{% endblock %}
+
+{% block body %}
+	<div class="container-fluid">
+		<div class="d-sm-flex align-items-center justify-content-between mb-4">
+			<h1 class="h3 mb-0 text-gray-800">Editar Usuário</h1>
+		</div>
+
+		<div class="card shadow mb-4">
+			<div class="card-header py-3">
+				<h6 class="m-0 font-weight-bold text-primary">Edite os dados do usuário</h6>
+			</div>
+			<div class="card-body">
+				{{ include('admin/user/_form.html.twig', {'button_label': 'Atualizar'}) }}
+
+				<hr class="my-4">
+
+				<div class="d-flex justify-content-end">
+					{{ include('admin/user/_delete_form.html.twig') }}
+				</div>
+			</div>
+		</div>
+	</div>
+{% endblock %}

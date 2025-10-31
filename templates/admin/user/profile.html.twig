@@ -1,0 +1,31 @@
+{% extends 'layouts/base.html.twig' %}
+
+{% block title %}Editar Perfil
+{% endblock %}
+
+{% block breadcrumbs %}
+	{% include 'components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'Dashboard', path: path('app_admin') },
+            { label: 'Editar'},
+        ]
+    } %}
+{% endblock %}
+
+{% block body %}
+	<div class="container-fluid">
+		<div class="d-sm-flex align-items-center justify-content-between mb-4">
+			<h1 class="h3 mb-0 text-gray-800">Editar meu perfil</h1>
+		</div>
+
+		<div class="card shadow mb-4">
+			<div class="card-header py-3">
+				<h6 class="m-0 font-weight-bold text-primary">Edite os dados de
+					{{ app.user.name}}</h6>
+			</div>
+			<div class="card-body">
+				{{ include('admin/user/_form.html.twig', {'button_label': 'Atualizar'}) }}
+			</div>
+		</div>
+	</div>
+{% endblock %}

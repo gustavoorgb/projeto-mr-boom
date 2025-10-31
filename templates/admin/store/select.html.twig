@@ -1,0 +1,30 @@
+{% extends 'layouts/base.html.twig' %}
+
+{% block title %}Selecionar Loja
+{% endblock %}
+
+{% block breadcrumbs %}
+	{% include 'components/_breadcrumb.html.twig' with {
+        breadcrumbs: [
+            { label: 'Dashboard', path: path('app_admin') },
+            { label: 'Selecionar Loja'},
+        ]
+    } %}
+{% endblock %}
+
+{% block body %}
+	<h3>Selecione a loja que deseja usar</h3>
+
+	<div class="row">
+		{% for store in stores %}
+			<div class="col-md-4 mb-3">
+				<div class="card shadow-sm">
+					<div class="card-body">
+						<h5 class="card-title">{{ store.corporateName }}</h5>
+						<a href="{{ path('app_store_set', {'id': store.id}) }}" class="btn btn-primary">Selecionar</a>
+					</div>
+				</div>
+			</div>
+		{% endfor %}
+	</div>
+{% endblock %}

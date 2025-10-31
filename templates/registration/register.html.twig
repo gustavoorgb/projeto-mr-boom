@@ -1,0 +1,93 @@
+{# templates/registration/register.html.twig #}
+
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+		<meta name="description" content="">
+		<meta name="author" content="">
+
+		<title>SB Admin 2 - Register</title>
+
+		{# Importe seus assets compilados pelo Webpack Encore #}
+		{{ encore_entry_link_tags('app') }}
+		<link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+	</head>
+
+	<body class="bg-gradient-primary">
+		<div class="container">
+			<div class="card o-hidden border-0 shadow-lg my-5">
+				<div class="card-body p-0">
+					<div class="row">
+						<div class="col-lg-12">
+							<div class="p-5">
+								<div class="text-center">
+									<h1 class="h4 text-gray-900 mb-4">Crie sua Conta!</h1>
+								</div>
+
+								{# Renderize as mensagens de erro globais do formulário #}
+								{{ form_errors(registrationForm) }}
+
+								{# Use form_start para abrir o formulário. Isso adiciona o token CSRF e outros campos ocultos. #}
+								{{ form_start(registrationForm, {'attr': {'class': 'user'}}) }}
+
+								<div class="form-group row">
+									<div class="col-sm-6 mb-3 mb-sm-0">
+										{{ form_row(registrationForm.name, {
+                                            'attr': {'class': 'form-control form-control-user', 'placeholder': 'Nome'},
+                                            'label': false
+                                        }) }}
+									</div>
+									<div class="col-sm-6">
+										{{ form_row(registrationForm.phone, {
+                                            'attr': {'class': 'form-control form-control-user', 'placeholder': 'Telefone'},
+                                            'label': false
+                                        }) }}
+									</div>
+								</div>
+
+								<div class="form-group">
+									{{ form_row(registrationForm.email, {
+                                        'attr': {'class': 'form-control form-control-user', 'placeholder': 'Endereço de E-mail'},
+                                        'label': false
+                                    }) }}
+								</div>
+
+								<div class="form-group row">
+									<div class="col-sm-6 mb-3 mb-sm-0">
+										{{ form_widget(registrationForm.password.first, {'attr': {'class': 'form-control form-control-user', 'placeholder': 'Senha'}}) }}
+										{{ form_errors(registrationForm.password.first) }}
+									</div>
+									<div class="col-sm-6">
+										{{ form_widget(registrationForm.password.second, {'attr': {'class': 'form-control form-control-user', 'placeholder': 'Confirmar Senha'}}) }}
+										{{ form_errors(registrationForm.password.second) }}
+									</div>
+								</div>
+
+								<button type="submit" class="btn btn-primary btn-user btn-block">
+									Registrar Conta
+								</button>
+
+								{# Use form_end para fechar o formulário e renderizar o token CSRF. #}
+								{{ form_end(registrationForm) }}
+
+								<hr>
+								<div class="text-center">
+									<a class="small" href="#">Esqueceu a senha?</a>
+								</div>
+								<div class="text-center">
+									<a class="small" href="#">Já tem uma conta? Entrar!</a>
+								</div>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		{# Importe seus scripts compilados pelo Webpack Encore #}
+		{{ encore_entry_script_tags('app') }}
+	</body>
+</html>
